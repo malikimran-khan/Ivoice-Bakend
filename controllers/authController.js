@@ -25,8 +25,8 @@ export const login = async (req, res) => {
     // 4️⃣ Send token as HttpOnly Cookie
     res.cookie("access_token", token, {
       httpOnly: true, // ❌ JS cannot access
-      secure: process.env.NODE_ENV === "production", // HTTPS only in prod
-      sameSite: "strict", // CSRF protection
+      secure: true, // Always true for cross-site cookies
+      sameSite: "none", // Allow cross-site cookies
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
@@ -104,6 +104,8 @@ export const logout = (req, res) => {
   try {
     res.cookie("access_token", "", {
       httpOnly: true,
+      secure: true,
+      sameSite: "none",
       expires: new Date(0),
     });
     res.status(200).json({ message: "Logged out successfully" });
